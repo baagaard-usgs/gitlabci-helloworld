@@ -15,7 +15,7 @@ debian-stable-job:
   image: hw-debian-stable
   script:
     - echo "Starting job"
-    - echo "CONFIG: $MYCONFIG"
+    - echo "$MYCONFIG"
     - ./hello.sh basic
 
 debian-testing-job:
@@ -23,5 +23,5 @@ debian-testing-job:
   image: hw-debian-testing
   script:
     - echo "Starting another job"
-    - echo "CONFIG: $MYCONFIG"
+    - echo "$MYCONFIG"
     - ./hello.sh other-1
