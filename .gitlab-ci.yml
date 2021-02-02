@@ -12,12 +12,16 @@ after_script:
 
 debian-stable-job:
   stage: basic-platform
+  image: hw-debian-stable
   script:
     - echo "Starting job"
+    - echo "CONFIG: $MYCONFIG"
     - ./hello.sh basic
 
 debian-testing-job:
   stage: other-platforms
+  image: hw-debian-testing
   script:
     - echo "Starting another job"
+    - echo "CONFIG: $MYCONFIG"
     - ./hello.sh other-1

@@ -1,0 +1,6 @@
+FROM ubuntu:18.04
+MAINTAINER Brad Aagaard <baagaard@usgs.gov>
+
+ENV MYCONFIG custom-ubuntu-18.04
+
+CMD /bin/bash

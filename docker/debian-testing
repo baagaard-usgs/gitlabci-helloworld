@@ -1,0 +1,6 @@
+FROM debian:testing
+MAINTAINER Brad Aagaard <baagaard@usgs.gov>
+
+ENV MYCONFIG custom-debian-testing
+
+CMD /bin/bash

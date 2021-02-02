@@ -1,0 +1,6 @@
+FROM debian:stable
+MAINTAINER Brad Aagaard <baagaard@usgs.gov>
+
+ENV MYCONFIG custom-debian-stable
+
+CMD /bin/bash
