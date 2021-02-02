@@ -1,0 +1,23 @@
+image: debian:stable
+
+stages:
+  - basic-platform
+  - other-platforms
+
+before_script:
+  - echo "Before script section"
+
+after_script:
+  - echo "After script section"
+
+debian-stable-job:
+  stage: basic-platform
+  script:
+    - echo "Starting job"
+    - ./hello.sh basic
+
+debian-testing-job:
+  stage: other-platforms
+  script:
+    - echo "Starting another job"
+    - ./hello.sh other-1
