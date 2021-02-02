@@ -1,0 +1,50 @@
+# docker build --build-arg BASE_IMAGE=${VARIABLE_NAME} --build-arg NAME=${VARIABLE_NAME} -f DOCKERFILE . -t IMAGE_NAME .
+
+ARG BASE_IMAGE
+from ${BASE_IMAGE} as base
+ARG NAME=unknown
+ENV NAME=${NAME}
+
+LABEL maintainer="Brad Aagaard <baagaard@usgs.gov>"
+
+ENV HW_USER=hello-user
+RUN useradd --create-home --shell /bin/bash $HW_USER
+
+ENV PREFIX_DIR=/opt/pylith HOME=/home/$HW_USER
+ENV TOPSRC_DIR=$HOME/src TOPBUILD_DIR=$HOME/build
+RUN mkdir ${PREFIX_DIR} \
+  && chown ${HW_USER} ${PREFIX_DIR} \
+  && chgrp ${HW_USER} ${PREFIX_DIR}
+
+
+# ------------------------------------------------------------------------------
+from base as src
+
+ENV src_dir=${TOPSRC_DIR}/hello-world build_dir=${TOPBUILD_DIR}/hello-world
+RUN mkdir -p ${src_dir} \
+  && mkdir -p ${build_dir}
+COPY --chown=hello-user:hello-user . ${src_dir}
+
+USER ${HW_USER}
+WORKDIR ${src_dir}
+
+# ------------------------------------------------------------------------------
+from src as configure
+
+RUN echo "Starting hello world in ${NAME}" \
+  && ./hello.sh ${NAME}
+
+# ------------------------------------------------------------------------------
+from src as build
+
+WORKDIR ${build_dir}
+RUN echo "Current directory: `pwd`" \
+  && touch ${PREFIX_DIR}/hello \
+  && ls -l ${PREFIX_DIR}
+
+WORKDIR ${src_dir}
+
+# ------------------------------------------------------------------------------
+from build as test
+
+RUN echo "Testing step"
