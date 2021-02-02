@@ -25,3 +25,11 @@ debian-testing-job:
     - echo "Starting another job"
     - echo "$MYCONFIG"
     - ./hello.sh other-1
+
+ubuntu-18.04-job:
+  stage: other-platforms
+  image: baagaard/hw-ubuntu-18.04
+  script:
+    - echo "Starting another job"
+    - echo "$MYCONFIG"
+    - ./hello.sh other-2
