@@ -12,7 +12,7 @@ after_script:
 
 debian-stable-job:
   stage: basic-platform
-  image: hw-debian-stable
+  image: baagaard/hw-debian-stable
   script:
     - echo "Starting job"
     - echo "$MYCONFIG"
@@ -20,7 +20,7 @@ debian-stable-job:
 
 debian-testing-job:
   stage: other-platforms
-  image: hw-debian-testing
+  image: baagaard/hw-debian-testing
   script:
     - echo "Starting another job"
     - echo "$MYCONFIG"
