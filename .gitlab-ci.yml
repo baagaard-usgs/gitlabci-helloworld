@@ -20,10 +20,13 @@ stages:
     - docker run hw-testenv ./hello.sh testing
 
 .builder-first:
-  #tags:
-  #  - arling
   extends: .builder
   stage: basic-platform
+
+.doc:
+  when: manual
+  script:
+    - docker run hw-testenv ./hello.sh $NAME
 
 trigger-job:
   stage: manual-trigger
@@ -53,21 +56,16 @@ ubuntu-18.04-job:
 
 auto-doc-job:
   stage: auto-documentation
-  when: manual
-  extends: .default
+  extends: .doc
   variables:
     BASE_IMAGE: baagaard/hw-debian-stable
     NAME: auto-documentation
-  script:
-    - docker run hw-testenv ./hello.sh auto-documentation
 
 manual-doc-job:
   stage: basic-platform
-  when: manual
+  extends: .doc
   only:
     - main
   variables:
     BASE_IMAGE: baagaard/hw-debian-stable
     NAME: manual-documentation
-  script:
-    - docker run hw-testenv ./hello.sh manual-documentation
