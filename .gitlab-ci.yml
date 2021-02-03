@@ -6,13 +6,15 @@ stages:
 
 before_script:
   - docker info
-
+  
 .default:
   tags:
     - arling
   script:
     - docker build -t hw-testenv --build-arg BASE_IMAGE=$BASE_IMAGE --build-arg NAME=$NAME --target build -f docker/helloenv .
     - docker run hw-testenv ./hello.sh testing
+  variables:
+    DOCKER_HOST: unix://$XDG_RUNTIME_DIR/docker.sock
 
 debian-stable-job:
   stage: basic-platform
