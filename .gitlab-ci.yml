@@ -6,7 +6,6 @@ stages:
 
 before_script:
   - docker info
-  - docker images
 
 .default:
   script:
