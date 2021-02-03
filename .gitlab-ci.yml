@@ -6,14 +6,14 @@ stages:
   - other-platforms
   - auto-documentation
 
-.default:
+.pull-request:
   only:
     - external_pull_requests
 
 .builder:
   #tags:
   #  - arling
-  extends: .default
+  extends: .pull-request
   stage: other-platforms
   script:
     - docker build -t hw-testenv --build-arg BASE_IMAGE=$BASE_IMAGE --build-arg NAME=$NAME --target build -f docker/helloenv .
@@ -31,7 +31,7 @@ stages:
 trigger-job:
   stage: manual-trigger
   when: manual
-  extends: .default
+  extends: .pull-request
   allow_failure: false
   script:
     - echo "Pipeline triggered manually"
@@ -56,7 +56,9 @@ ubuntu-18.04-job:
 
 auto-doc-job:
   stage: auto-documentation
-  extends: .doc
+  extends:
+    - .pull-request
+    - .doc
   variables:
     BASE_IMAGE: baagaard/hw-debian-stable
     NAME: auto-documentation
