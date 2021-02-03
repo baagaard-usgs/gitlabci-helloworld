@@ -3,18 +3,21 @@ image: docker:latest
 stages:
   - basic-platform
   - other-platforms
-
+  - auto-documentation
+  
 before_script:
   - docker info
   
 .default:
-  tags:
-    - arling
+  #tags:
+  #  - arling
+  only:
+    - external_pull_requests
   script:
     - docker build -t hw-testenv --build-arg BASE_IMAGE=$BASE_IMAGE --build-arg NAME=$NAME --target build -f docker/helloenv .
     - docker run hw-testenv ./hello.sh testing
-  variables:
-    DOCKER_HOST: unix://$XDG_RUNTIME_DIR/docker.sock
+  #variables:
+  #  DOCKER_HOST: unix://$XDG_RUNTIME_DIR/docker.sock
 
 debian-stable-job:
   stage: basic-platform
@@ -36,3 +39,21 @@ ubuntu-18.04-job:
   variables:
     BASE_IMAGE: baagaard/hw-ubuntu-18.04
     NAME: custom-ubuntu-18.04
+
+auto-doc-job:
+  stage: auto-documentation
+  when: manual
+  variables:
+    BASE_IMAGE: baagaard/hw-debian-stable
+    NAME: auto-documentation
+  script:
+    - docker run hw-testenv ./hello.sh auto-documentation
+
+manual-doc-job:
+  stage: basic-platform
+  when: manual
+  variables:
+    BASE_IMAGE: baagaard/hw-debian-stable
+    NAME: manual-documentation
+  script:
+    - docker run hw-testenv ./hello.sh manual-documentation
