@@ -1,20 +1,29 @@
 image: docker:latest
 
 stages:
+  - manual-trigger
   - basic-platform
   - other-platforms
-
-before_script:
-  - docker info
+  - auto-documentation
   
 .default:
-  tags:
-    - arling
+  #tags:
+  #  - arling
+  only:
+    - external_pull_requests
   script:
     - docker build -t hw-testenv --build-arg BASE_IMAGE=$BASE_IMAGE --build-arg NAME=$NAME --target build -f docker/helloenv .
     - docker run hw-testenv ./hello.sh testing
-  variables:
-    DOCKER_HOST: unix://$XDG_RUNTIME_DIR/docker.sock
+
+trigger-job:
+  stage: manual-trigger
+  when: manual
+  allow_failure: false
+  only:
+    - external_pull_requests
+  script:
+    - echo "Pipeline triggered manually"
+  #  - docker info
 
 debian-stable-job:
   stage: basic-platform
@@ -36,3 +45,23 @@ ubuntu-18.04-job:
   variables:
     BASE_IMAGE: baagaard/hw-ubuntu-18.04
     NAME: custom-ubuntu-18.04
+
+auto-doc-job:
+  stage: auto-documentation
+  when: manual
+  variables:
+    BASE_IMAGE: baagaard/hw-debian-stable
+    NAME: auto-documentation
+  script:
+    - docker run hw-testenv ./hello.sh auto-documentation
+
+manual-doc-job:
+  stage: basic-platform
+  when: manual
+  only:
+    - main
+  variables:
+    BASE_IMAGE: baagaard/hw-debian-stable
+    NAME: manual-documentation
+  script:
+    - docker run hw-testenv ./hello.sh manual-documentation
