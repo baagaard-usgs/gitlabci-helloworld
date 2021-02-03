@@ -1,11 +1,11 @@
 image: docker:latest
 
-services:
-    - docker:dind
-
 stages:
   - basic-platform
   - other-platforms
+
+before_script:
+  - docker info
 
 .default:
   script:
