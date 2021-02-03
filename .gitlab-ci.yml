@@ -5,43 +5,48 @@ stages:
   - basic-platform
   - other-platforms
   - auto-documentation
-  
+
 .default:
-  #tags:
-  #  - arling
   only:
     - external_pull_requests
+
+.builder:
+  #tags:
+  #  - arling
+  extends: .default
+  stage: other-platforms
   script:
     - docker build -t hw-testenv --build-arg BASE_IMAGE=$BASE_IMAGE --build-arg NAME=$NAME --target build -f docker/helloenv .
     - docker run hw-testenv ./hello.sh testing
 
+.builder-first:
+  #tags:
+  #  - arling
+  extends: .builder
+  stage: basic-platform
+
 trigger-job:
   stage: manual-trigger
   when: manual
+  extends: .default
   allow_failure: false
-  only:
-    - external_pull_requests
   script:
     - echo "Pipeline triggered manually"
-  #  - docker info
 
 debian-stable-job:
-  stage: basic-platform
-  extends: .default
+  extends: .builder-first
   variables:
     BASE_IMAGE: baagaard/hw-debian-stable
     NAME: custom-debian-stable
 
 debian-testing-job:
-  stage: other-platforms
-  extends: .default
+  extends: .builder
   variables:
     BASE_IMAGE: baagaard/hw-debian-testing
     NAME: custom-debian-testing
 
 ubuntu-18.04-job:
-  stage: other-platforms
-  extends: .default
+  extends: .builder
   variables:
     BASE_IMAGE: baagaard/hw-ubuntu-18.04
     NAME: custom-ubuntu-18.04
@@ -49,6 +54,7 @@ ubuntu-18.04-job:
 auto-doc-job:
   stage: auto-documentation
   when: manual
+  extends: .default
   variables:
     BASE_IMAGE: baagaard/hw-debian-stable
     NAME: auto-documentation
